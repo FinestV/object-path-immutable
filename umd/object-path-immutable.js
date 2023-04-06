@@ -370,7 +370,7 @@
     if (isArray(value) && value.length === 0) {
       return true
     } else if (!isString(value)) {
-      for (var i in value) {
+      for (var i of Reflect.ownKeys(value)) {
         if (_hasOwnProperty.call(value, i)) {
           return false
         }
@@ -393,7 +393,7 @@
   }
 
   function assignToObj (target, source) {
-    for (var key in source) {
+    for (var key of Reflect.ownKeys(source)) {
       if (_hasOwnProperty.call(source, key)) {
         target[key] = source[key];
       }
@@ -430,7 +430,7 @@
   function _deepMerge (dest, src) {
     if (dest !== src && isPlainObject(dest) && isPlainObject(src)) {
       var merged = {};
-      for (var key in dest) {
+      for (var key of Reflect.ownKeys(dest)) {
         if (_hasOwnProperty.call(dest, key)) {
           if (_hasOwnProperty.call(src, key)) {
             merged[key] = _deepMerge(dest[key], src[key]);
@@ -440,7 +440,7 @@
         }
       }
 
-      for (key in src) {
+      for (key of Reflect.ownKeys(src)) {
         if (_hasOwnProperty.call(src, key)) {
           merged[key] = _deepMerge(dest[key], src[key]);
         }
