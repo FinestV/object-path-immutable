@@ -370,12 +370,13 @@
     if (isArray(value) && value.length === 0) {
       return true
     } else if (!isString(value)) {
-      for (var i of Reflect.ownKeys(value)) {
-        if (_hasOwnProperty.call(value, i)) {
-          return false
-        }
-      }
-      return true
+      return !Reflect.ownKeys(value).some(key => _hasOwnProperty.call(value, key));
+      // for (var i of Reflect.ownKeys(value)) {
+      //   if (_hasOwnProperty.call(value, i)) {
+      //     return false
+      //   }
+      // }
+      // return true
     }
     return false
   }
@@ -393,11 +394,16 @@
   }
 
   function assignToObj (target, source) {
-    for (var key of Reflect.ownKeys(source)) {
+    // for (var key of Reflect.ownKeys(source)) {
+    //   if (_hasOwnProperty.call(source, key)) {
+    //     target[key] = source[key]
+    //   }
+    // }
+    Reflect.ownKeys(source).forEach(key => {
       if (_hasOwnProperty.call(source, key)) {
         target[key] = source[key];
       }
-    }
+    });
     return target
   }
 
@@ -430,7 +436,17 @@
   function _deepMerge (dest, src) {
     if (dest !== src && isPlainObject(dest) && isPlainObject(src)) {
       var merged = {};
-      for (var key of Reflect.ownKeys(dest)) {
+      // for (var key of Reflect.ownKeys(dest)) {
+      //   if (_hasOwnProperty.call(dest, key)) {
+      //     if (_hasOwnProperty.call(src, key)) {
+      //       merged[key] = _deepMerge(dest[key], src[key])
+      //     } else {
+      //       merged[key] = dest[key]
+      //     }
+      //   }
+      // }
+
+      Reflect.ownKeys(dest).forEach(key => {
         if (_hasOwnProperty.call(dest, key)) {
           if (_hasOwnProperty.call(src, key)) {
             merged[key] = _deepMerge(dest[key], src[key]);
@@ -438,13 +454,18 @@
             merged[key] = dest[key];
           }
         }
-      }
+      });
 
-      for (key of Reflect.ownKeys(src)) {
+      Reflect.ownKeys(src).forEach(key => {
         if (_hasOwnProperty.call(src, key)) {
           merged[key] = _deepMerge(dest[key], src[key]);
         }
-      }
+      });
+      // for (key of Reflect.ownKeys(src)) {
+      //   if (_hasOwnProperty.call(src, key)) {
+      //     merged[key] = _deepMerge(dest[key], src[key])
+      //   }
+      // }
       return merged
     }
     return src
