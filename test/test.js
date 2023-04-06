@@ -15,6 +15,8 @@ function getTestObj () {
   }
 }
 
+var testSymbol = Symbol('testSymbol');
+
 describe('get', function () {
   it('should return the value using unicode key', function () {
     var obj = {
@@ -142,7 +144,8 @@ describe('set', function () {
       },
       c: {
         d: 2
-      }
+      },
+      [testSymbol]: { e: 4 }
     }
 
     var newObj = op.set(obj, 'a.b', 3)
@@ -154,6 +157,8 @@ describe('set', function () {
     expect(newObj.c).to.be.equal(obj.c)
 
     expect(newObj.a.b).to.be.equal(3)
+
+    expect(newObj[testSymbol]).to.be.equal(obj[testSymbol]);
   })
 
   it('should set a deep array', function () {
@@ -216,7 +221,8 @@ describe('update', function () {
       },
       c: {
         d: 2
-      }
+      },
+      [testSymbol]: { e: 4 }
     }
 
     var newObj = op.update(obj, 'a.b', function (value) {
@@ -230,6 +236,8 @@ describe('update', function () {
     expect(newObj.c).to.be.equal(obj.c)
 
     expect(newObj.a.b).to.be.equal(2)
+
+    expect(newObj[testSymbol]).to.be.equal(obj[testSymbol]);
   })
 
   it('should work on empty path', function () {
@@ -460,7 +468,8 @@ describe('assign', function () {
       },
       c: {
         d: 2
-      }
+      },
+      [testSymbol]: { e: 4 }
     }
 
     var newObj = op.assign(obj, 'a', { b: 3 })
@@ -471,6 +480,8 @@ describe('assign', function () {
     expect(newObj.c).to.be.equal(obj.c)
 
     expect(newObj.a.b).to.be.equal(3)
+
+    expect(newObj[testSymbol]).to.be.equal(obj[testSymbol])
   })
 
   it('should keep existing fields that are not overwritten', function () {
